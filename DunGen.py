@@ -11,13 +11,25 @@ class Chamber:
         self.passage_count = passage_count
         self.passages = []
         
+    def __str__(self, level=0):
+        return_string = "\t" * level + "A chamber of dimensions " + str(self.length) + " by " + str(self.width) + "\n"
+        for passage in self.passages:
+            return_string += passage.__str__(level+1)
+        return return_string
+        
 #passage class
 class Passage:
     def __init__(self, length, width):
-        self.legnth = length
+        self.length = length
         self.width = width
         #TODO: Passages currently just lead to chambers, make them able to branch etc.
         self.chambers = []
+    
+    def __str__(self, level=0):
+        return_string = "\t" * level + "A corridor of dimensions " + str(self.length) + " by " + str(self.width) + "\n"
+        for chamber in self.chambers:
+            return_string += chamber.__str__(level+1)
+        return return_string
         
 class Door:
     pass
@@ -44,6 +56,9 @@ def generatePassage():
     #TODO: can probably make these into json blobs or something for more sustainable storage
     passage_collection = []
     passage_collection.append(Passage(20, 10))
+    passage_collection.append(Passage(10, 10))
+    passage_collection.append(Passage(30, 10))
+    passage_collection.append(Passage(20, 5))
     return random.choice(passage_collection)
     
     
@@ -54,14 +69,16 @@ if __name__ == "__main__":
     max_rooms = sys.argv[1]
     num_levels = sys.argv[2]
     print("creating dungeon with up to " + max_rooms + " rooms")
-    starting_areas = [Chamber(20, 20, 2)]
+    starting_areas = [Chamber(20, 20, 2), Chamber(10, 10, 2)]
     starting_area = random.choice(starting_areas)
-    print("You are in a chamber " + str(starting_area.width) + " wide and " + str(starting_area.length) + " long. " + str(starting_area.passage_count) + " passages extend from here.")
+    
     for p in range(starting_area.passage_count):
         #breadth first or depth first...?
         passage = generatePassage()
         starting_area.passages.append(passage)
-        passage.chambers.append(starting_area)
     
-    for passage in starting_area.passages:
+    #for passage in starting_area.passages:
+    
+
+    print(starting_area)
         
